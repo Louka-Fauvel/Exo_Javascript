@@ -37,5 +37,5 @@ table tr.win td {background:#43b456;}
 
 .pion {display:inline-block; width:20px; height:20px; border-radius:10px; border:solid 1px #888;}
 
-.correct {display:inline-block; width:10px; height:10px; border-radius:5px; border:solid 1px #888; background:black;}
-.misplaced {display:inline-block; width:10px; height:10px; border-radius:5px; border:solid 1px #888;}
+.goodPlaceColor {display:inline-block; width:10px; height:10px; border-radius:5px; border:solid 1px #888; background:black;}
+.goodColor {display:inline-block; width:10px; height:10px; border-radius:5px; border:solid 1px #888;}

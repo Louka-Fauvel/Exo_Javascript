@@ -15,8 +15,7 @@ var colors=[
 
 var combinaison=[]; // Combinaison code à trouver
 var reponses=[]; // Toutes les réponses du joueur
-var combiActive=[1,2,3,4]; // Combinaison forcée pour les tests
-var combiActive2=[5,1,3,2]; // Deuxième combinaison pour le test addCombi
+var combiActive=[]; // Combinaison joueur pour les tests
 
 const GOOD_PLACE_COLOR ='GOOD_PLACE_COLOR'; // Couleur bien placée
 const GOOD_COLOR='GOOD_COLOR'; // Bonne Couleur
@@ -26,12 +25,14 @@ var turnCount = 12; // Nombre de tours maximum
 var nbColors = 6; // Nombre de couleurs du jeu
 
 var turn=1; // Tour courant
+var activecolonne=1; // Colonne courant
 
-// Tests
+// Jeu Mastermind
 
-// Test de la création du plateau
+
 window.addEventListener('load',()=>{
   gameZone();
+  startNew();
   inputCombi();
 });
 
@@ -43,6 +44,7 @@ function startNew(){
   generateCombi();
   clearCombis();
   turn=1;
+  activecolonne=1;
 }
 
 
@@ -101,6 +103,7 @@ function inputCombi(){ // interface de saisie ex : [['1','2','3','4']['5','0','4
   zoneColors.innerHTML ='';
   ligneColors = document.createElement('tr');
   for(i=1;i<=nbColors;i++){
+    var color=i-1;
     colonneColors = document.createElement('td');
     colonneColors.innerHTML ='';
     colonneColors.style.width = '32px';
@@ -108,10 +111,72 @@ function inputCombi(){ // interface de saisie ex : [['1','2','3','4']['5','0','4
 
     pion = document.createElement('div');
     pion.className = 'pion';
-    pion.style.background = colors[i-1];
+    pion.style.background = colors[color];
+    pion.setAttribute('onclick','selectCouleur('+color+');');
     colonneColors.appendChild(pion);
   }
+  boutonOk = document.createElement('td');
+  boutonOk.innerHTML ='Ok';
+  boutonOk.style.width = '32px';
+  boutonOk.id = 'boutonOk';
+  boutonOk.setAttribute('onclick','traitementReponse();');
+  ligneColors.appendChild(boutonOk);
   zoneColors.appendChild(ligneColors);
+}
+
+// Fonction qui selectionne la couleur
+
+function selectCouleur(color){
+  combiActive[activecolonne-1]=color;
+  console.log(combiActive);
+  caseActive = document.getElementById('tour-'+turn+'-'+activecolonne);
+  caseActive.innerHTML = '';
+  pion = document.createElement('div');
+  pion.className = 'pion';
+  pion.style.background = colors[color];
+  caseActive.appendChild(pion);
+  if(activecolonne == combiSize){
+    activecolonne = 1;
+  }else activecolonne++;
+}
+
+// Fonction qui traitre la réponse du joueur et fait avancer le jeu
+
+function traitementReponse(){
+  addCombi(combiActive);
+  console.log('combinaison');
+  console.log(combinaison);
+  let indicesIA=compare(combiActive);
+  console.log('combinaison');
+  console.log(combinaison);
+  console.log(indicesIA);
+  displayCombiResponse(indicesIA);
+  if(hasWin(indicesIA)){
+    console.log('Vous avez gagné');
+  }
+  turn++;
+  if(isTerminated()){
+    console.log('Fin du jeu');
+  }
+  activecolonne=1;
+  combiActive=[];
+}
+
+function displayCombiResponse(combi){ //=> affiche la combinaison réponse de l’IA
+  for(i=1;i<=combiSize;i++){
+    zoneResultat = document.getElementById('resultat-'+turn+'-'+i);
+    console.log('hello');
+    if(combi[i-1]==GOOD_PLACE_COLOR){
+      pion = document.createElement('div');
+      pion.className = 'goodPlaceColor';
+      zoneResultat.appendChild(pion);
+    }
+    if (combi[i-1]==GOOD_COLOR){
+      pion = document.createElement('div');
+      pion.className = 'goodColor';
+      zoneResultat.appendChild(pion);
+    }
+  }
 }
 
 // Fonction qui vide les combinaisons
@@ -133,8 +198,8 @@ function addCombi(combi){
 function compare(combi){
   let combinaisonReponse=[];
   let i=0;
-  let code = combinaison;
-  let combiJ = combi;
+  let code = combinaison.slice(0);
+  let combiJ = combi.slice(0);
   for(j=0; j<=combiSize-1; j++){ // Recherche des couleurs bien placées
     if(combiJ[j]===code[j]){
       combinaisonReponse[i]=GOOD_PLACE_COLOR;
@@ -156,6 +221,8 @@ function compare(combi){
       };
     };
   };
+  console.log('code');
+  console.log(code);
   return combinaisonReponse;
 }
 
@@ -196,9 +263,7 @@ function displayCombi(combi){ //=> affiche une combinaison saisie par l’utilis
 //function get activeCombi():combinaison // retourne la combinaison active
 
 
-function displayCombiResponse(combi){ //=> affiche la combinaison réponse de l’IA
 
-}
 
 
 
