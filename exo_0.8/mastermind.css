@@ -25,6 +25,9 @@ img {border:0; max-width:100%; height:auto;}
 /* titre */
 h1 {font-size:20px; color:#0005c2;}
 
+.Victoire {font-size:20px; padding-left: 32px; color: #009900;}
+.Defaite {font-size:20px; padding-left: 32px; color: #990000;}
+
 /* game zone */
 table {border-collapse:collapse;}
 table td {border:solid 1px #888; padding:4px; text-align:center;}

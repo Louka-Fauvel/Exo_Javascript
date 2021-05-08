@@ -63,6 +63,24 @@ function generateCombi(){
 function gameZone(){
   zone = document.getElementById('plateau');
   zone.innerHTML ='';
+  ligne = document.createElement('tr');
+  ligne.id = 'codeSecret';
+
+  colonne = document.createElement('td');
+  colonne.innerHTML ='';
+  colonne.style.width = '32px';
+  colonne.className ='Vide';
+  ligne.appendChild(colonne);
+
+  for(j=1; j<=combiSize;j++){
+    colonne = document.createElement('td');
+    colonne.innerHTML ='?';
+    colonne.style.width = '32px';
+    colonne.id = 'codeSecret-'+j;
+    ligne.appendChild(colonne);
+    zone.appendChild(ligne);
+  }
+
   for(i=turnCount;i>0;i--){
     ligne = document.createElement('tr');
     ligne.id = 'tour-'+i;
@@ -128,7 +146,6 @@ function inputCombi(){ // interface de saisie ex : [['1','2','3','4']['5','0','4
 
 function selectCouleur(color){
   combiActive[activecolonne-1]=color;
-  console.log(combiActive);
   caseActive = document.getElementById('tour-'+turn+'-'+activecolonne);
   caseActive.innerHTML = '';
   pion = document.createElement('div');
@@ -144,19 +161,17 @@ function selectCouleur(color){
 
 function traitementReponse(){
   addCombi(combiActive);
-  console.log('combinaison');
-  console.log(combinaison);
   let indicesIA=compare(combiActive);
-  console.log('combinaison');
-  console.log(combinaison);
-  console.log(indicesIA);
   displayCombiResponse(indicesIA);
   if(hasWin(indicesIA)){
-    console.log('Vous avez gagné');
+    displayResponse('Victoire');
+    displayCombi();
   }
   turn++;
   if(isTerminated()){
-    console.log('Fin du jeu');
+    displayResponse('Défaite');
+    console.log('hello');
+    displayCombi();
   }
   activecolonne=1;
   combiActive=[];
@@ -165,7 +180,6 @@ function traitementReponse(){
 function displayCombiResponse(combi){ //=> affiche la combinaison réponse de l’IA
   for(i=1;i<=combiSize;i++){
     zoneResultat = document.getElementById('resultat-'+turn+'-'+i);
-    console.log('hello');
     if(combi[i-1]==GOOD_PLACE_COLOR){
       pion = document.createElement('div');
       pion.className = 'goodPlaceColor';
@@ -221,8 +235,6 @@ function compare(combi){
       };
     };
   };
-  console.log('code');
-  console.log(code);
   return combinaisonReponse;
 }
 
@@ -256,8 +268,16 @@ function isTerminated(){
 
 }
 
-function displayCombi(combi){ //=> affiche une combinaison saisie par l’utilisateur sur le plateau de jeu
-
+function displayCombi(){ //=> affiche la combinaison secrete
+  for(i=0;i<combiSize;i++){
+    j=i+1;
+    zoneSecret = document.getElementById('codeSecret-'+j);
+    zoneSecret.innerHTML ='';
+    lecodeSecret = document.createElement('div');
+    lecodeSecret.className = 'pion';
+    lecodeSecret.style.background = colors[i];
+    zoneSecret.appendChild(lecodeSecret);
+  }
 }
 
 //function get activeCombi():combinaison // retourne la combinaison active
@@ -268,8 +288,17 @@ function displayCombi(combi){ //=> affiche une combinaison saisie par l’utilis
 
 
 
-function displayResponse(type,message){ // affiche perdu ou victoire
-
+function displayResponse(type){ // affiche perdu ou victoire
+  zoneColors = document.getElementById('selectionCouleur');
+  zoneColors.innerHTML ='';
+  if(type=='Victoire'){
+  zoneMessage = document.getElementById('issue');
+  zoneMessage.innerHTML ='Vous avez gagné !';
+  zoneMessage.className ='Victoire';
+  }else {zoneMessage = document.getElementById('issue');
+    zoneMessage.innerHTML ='Vous avez perdu !';
+    zoneMessage.className ='Defaite';
+  }
 }
 
 
